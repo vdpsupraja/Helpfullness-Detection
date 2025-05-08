@@ -1,0 +1,58 @@
+{% extends 'index.html' %}
+
+{% block navbar %}
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('index')}}" style="color: white;">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('register')}}" style="color: white; padding-left: 40px;">Register</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{url_for('login')}}" style="color: yellow; padding-left: 40px;">Login</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div style="margin-top: 50px; min-height: 650px; height: auto; background-color: rgba(0, 0, 0, 0.655);">
+        <div class="container-fluid" style="margin-top: -50px;">
+            <div class="contact_section_2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <center>
+                            <form action="{{url_for('login')}}" method="post" onsubmit="return validateForm()" style="background-color: rgba(36, 158, 164, 0.879); width: 800px; border-radius: 10px; margin-top: 20px;">
+                                <h1 class="contact_taital" style="color: rgba(0, 0, 0, 0.849);"><br>Login to ProductPulse</h1>
+                                <p style="color: white; font-size: 16px;">Access product reviews and sentiment analysis!</p>
+
+                                <div class="col-10">
+                                    <input type="email" name="email" class="mail_text" placeholder="Email ID" required>
+    
+                                    <input type="password" name="password" class="mail_text" placeholder="Password" required>
+                                    
+                                    <button type="submit" class="btn btn-success" style="margin-top: 20px; width: 30%;">Sign In</button><br><br>
+                                </div>
+                                
+                            </form>
+                        </center>
+                        
+                        <script>
+                        function validateForm() {
+                            var email = document.getElementsByName('email')[0].value;
+                            var password = document.getElementsByName('password')[0].value;
+                        
+                            if (email === "" || password === "") {
+                                alert("Please fill in all fields.");
+                                return false;
+                            }
+                        
+                            return true;
+                        }
+                        </script>
+                                              
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

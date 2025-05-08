@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+
+{% block navbar %}
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('home')}}" style="color: white;">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('about')}}" style="color: yellow; padding-left: 30px;">About</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('prediction')}}" style="color: white; padding-left: 30px;">Analyze Sentiments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('index')}}" style="color: white; padding-left: 30px;">Logout</a>
+        </li>
+    </ul>
+{% endblock %}
+               
+
+{% block content %}
+<div class="container" style="background-color: rgba(0, 0, 0, 0.63); padding: 30px;">
+    <div class="row justify-content-center">
+        <div class="col text-center">
+            <h1 style="color: white;">About!</h1>
+            <p style="background-color: rgba(0, 0, 0, 0.836); color: white; padding: 30px; text-align: justify;">
+                This project aims to predict the sentiment of product reviews based on a dataset containing details like reviewer ID, product ID, review text, rating, and review time. The goal is to classify reviews into positive, negative, or neutral categories based on the content of the reviews.
+                <br><br>
+                By using advanced natural language processing techniques, we analyze the review text to understand its sentiment. This approach helps businesses gain valuable insights from customer feedback, allowing them to improve their products and services based on customer opinions.
+            </p>
+            <h5 style="color: white;">Sentiment Prediction of Product Reviews</h5>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

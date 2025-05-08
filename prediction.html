@@ -1,0 +1,116 @@
+{% extends 'index.html' %}
+
+{% block navbar %}
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('home')}}" style="color: white;">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('about')}}" style="color: white; padding-left: 30px;">About</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{url_for('prediction')}}" style="color: yellow; padding-left: 30px;">Analyze Sentiments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('index')}}" style="color: white; padding-left: 30px;">Logout</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+    <div style="margin-top: 50px; min-height: 1100px; height: auto; background-color: rgba(0, 0, 0, 0.655);">
+        <div class="container-fluid" style="margin-top: -50px; padding: 20px;">
+            <div class="contact_section_2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <center>
+                            <h1 class="contact_taital" style="color: white; margin-bottom: 30px;">Explore Product Reviews</h1>
+
+                            <!-- Search Bar -->
+                            <form action="{{url_for('prediction')}}" method="post" style="margin-bottom: 40px;">
+                                <div class="input-group" style="width: 50%; margin: 0 auto;">
+                                    <input type="text" name="product_search" class="form-control" placeholder="Search for a product (ASIN)..." required>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Product Cards Section -->
+                            <div class="row" id="productCards" style="margin-bottom: 40px;">
+                                {% for product in products %}
+                                    <div class="col-md-4">
+                                        <div class="card text-white bg-dark mb-3" style="max-width: 18rem; cursor: pointer;" onclick="loadReviews('{{ product }}')">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ product }}</h5>
+                                                <p class="card-text">Click to view reviews</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Reviews Display Section -->
+                            <div id="reviewsSection" style="background-color: rgba(36, 158, 164, 0.879); width: 80%; border-radius: 10px; padding: 20px; min-height: 300px;">
+                                <h2 style="color: white;">Reviews</h2>
+                                <div id="reviewsList" style="color: white; max-height: 400px; overflow-y: auto;">
+                                    <p>No product selected yet. Search or click a product card to see reviews.</p>
+                                </div>
+                                <button id="analyzeButton" class="btn btn-success" style="margin-top: 20px; width: 30%; display: none;" onclick="analyzeSentiments()">Analyze Sentiments</button>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to load reviews
+        async function loadReviews(productName) {
+            const reviewsSection = document.getElementById('reviewsSection');
+            const reviewsList = document.getElementById('reviewsList');
+            const analyzeButton = document.getElementById('analyzeButton');
+
+            const response = await fetch('/get_reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product: productName })
+            });
+            const result = await response.json();
+
+            if (result.reviews && result.reviews.length > 0) {
+                reviewsList.innerHTML = result.reviews.map(review => `<p>${review}</p>`).join('');
+                analyzeButton.style.display = 'block'; // Show the analyze button
+            } else {
+                reviewsList.innerHTML = '<p>No reviews found for this product.</p>';
+                analyzeButton.style.display = 'none';
+            }
+        }
+
+        // Function to analyze sentiments
+        async function analyzeSentiments() {
+            const productName = document.querySelector('input[name="product_search"]').value || document.querySelector('.card-title').textContent;
+            const response = await fetch('/analyze_sentiments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product: productName })
+            });
+            const result = await response.json();
+
+            if (result.sentiment) {
+                alert(`Sentiment Analysis: ${result.sentiment}`);
+            } else {
+                alert('Error analyzing sentiments: ' + result.error);
+            }
+        }
+
+        // Handle form submission
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const productName = document.querySelector('input[name="product_search"]').value;
+            loadReviews(productName);
+        });
+    </script>
+{% endblock %}
